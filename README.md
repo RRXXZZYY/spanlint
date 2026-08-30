@@ -86,7 +86,7 @@ jobs:
   spanlint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: RRXXZZYY/spanlint@v0.1.0
         with:
           path: traces/*.json

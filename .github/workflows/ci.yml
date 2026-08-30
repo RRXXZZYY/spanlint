@@ -23,8 +23,8 @@ jobs:
         os: [ubuntu-latest, windows-latest]
         node: [20, 24]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node }}
           cache: npm
@@ -39,8 +39,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: npm
@@ -62,7 +62,7 @@ jobs:
           test "$code" -eq 1
       - name: Build offline demo
         run: node dist/src/cli.js demo --out spanlint-demo.html
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: spanlint-demo
           path: spanlint-demo.html
