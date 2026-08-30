@@ -1,0 +1,7 @@
+node_modules/
+*.log
+*.tgz
+coverage/
+.DS_Store
+spanlint-demo.html
+spanlint-report.html

@@ -1,0 +1,59 @@
+name: SpanLint
+description: Lint OpenTelemetry GenAI and MCP traces in CI with deterministic, version-pinned rules.
+author: RRXXZZYY
+branding:
+  icon: activity
+  color: blue
+inputs:
+  path:
+    description: One trace file path or shell glob.
+    required: false
+    default: traces/*.json
+  strict:
+    description: Fail on warnings as well as errors.
+    required: false
+    default: "true"
+  privacy:
+    description: "Content policy: off, notice, or strict."
+    required: false
+    default: notice
+  report:
+    description: Also write spanlint-report.html in the workspace.
+    required: false
+    default: "true"
+outputs:
+  report:
+    description: Relative path of the generated HTML report, when enabled.
+    value: ${{ steps.run.outputs.report }}
+runs:
+  using: composite
+  steps:
+    - id: run
+      shell: bash
+      env:
+        SPANLINT_PATH: ${{ inputs.path }}
+        SPANLINT_STRICT: ${{ inputs.strict }}
+        SPANLINT_PRIVACY: ${{ inputs.privacy }}
+        SPANLINT_REPORT: ${{ inputs.report }}
+      run: |
+        mapfile -t files < <(compgen -G "$SPANLINT_PATH" || true)
+        if [ "${#files[@]}" -eq 0 ]; then
+          files=("$SPANLINT_PATH")
+        fi
+
+        args=(check "${files[@]}" --privacy "$SPANLINT_PRIVACY" --no-color)
+        if [ "$SPANLINT_STRICT" = "true" ]; then
+          args+=(--strict)
+        fi
+
+        set +e
+        node "$GITHUB_ACTION_PATH/dist/src/cli.js" "${args[@]}"
+        gate_code=$?
+        set -e
+
+        if [ "$SPANLINT_REPORT" = "true" ]; then
+          node "$GITHUB_ACTION_PATH/dist/src/cli.js" check "${files[@]}" --privacy "$SPANLINT_PRIVACY" --format html --out spanlint-report.html || true
+          echo "report=spanlint-report.html" >> "$GITHUB_OUTPUT"
+        fi
+
+        exit "$gate_code"

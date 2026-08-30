@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Node ${{ matrix.node }} · ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        node: [20, 24]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run check
+      - name: Verify committed distribution
+        shell: bash
+        run: git diff --exit-code -- dist
+
+  package-and-action:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm run pack:check
+      - name: Self-test the composite action
+        uses: ./
+        with:
+          path: examples/valid-agent.otlp.json
+          strict: "true"
+      - name: Verify failing fixture exits one
+        shell: bash
+        run: |
+          set +e
+          node dist/src/cli.js examples/broken-agent.otlp.json --strict --no-color
+          code=$?
+          set -e
+          test "$code" -eq 1
+      - name: Build offline demo
+        run: node dist/src/cli.js demo --out spanlint-demo.html
+      - uses: actions/upload-artifact@v4
+        with:
+          name: spanlint-demo
+          path: spanlint-demo.html
+          if-no-files-found: error

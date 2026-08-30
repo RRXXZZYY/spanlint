@@ -1,0 +1,57 @@
+{
+  "name": "spanlint",
+  "version": "0.1.0",
+  "description": "Deterministic CI linting and visual debugging for OpenTelemetry GenAI and MCP traces.",
+  "type": "module",
+  "bin": {
+    "spanlint": "dist/src/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    }
+  },
+  "files": [
+    "dist/src",
+    "examples",
+    "action.yml",
+    "README.md",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md"
+  ],
+  "scripts": {
+    "build": "tsc --pretty false",
+    "check": "tsc --noEmit --pretty false",
+    "test": "npm run build && node --test dist/test/*.test.js",
+    "test:coverage": "npm run build && node --test --experimental-test-coverage dist/test/*.test.js",
+    "demo": "npm run build && node dist/src/cli.js demo --out spanlint-demo.html",
+    "pack:check": "npm pack --dry-run"
+  },
+  "keywords": [
+    "opentelemetry",
+    "genai",
+    "mcp",
+    "observability",
+    "tracing",
+    "lint",
+    "ci"
+  ],
+  "author": "RRXXZZYY",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RRXXZZYY/spanlint.git"
+  },
+  "bugs": {
+    "url": "https://github.com/RRXXZZYY/spanlint/issues"
+  },
+  "homepage": "https://github.com/RRXXZZYY/spanlint#readme",
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "typescript": "^5.9.2"
+  }
+}

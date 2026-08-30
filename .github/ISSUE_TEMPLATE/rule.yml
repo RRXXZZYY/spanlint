@@ -1,0 +1,34 @@
+name: Rule proposal or false positive
+description: Propose one deterministic rule change with evidence.
+title: "rule: "
+labels: [rule]
+body:
+  - type: markdown
+    attributes:
+      value: Keep the proposal narrow. Do not submit private or production trace data.
+  - type: input
+    id: rule
+    attributes:
+      label: Existing or proposed rule ID
+      placeholder: MCP004
+    validations:
+      required: true
+  - type: dropdown
+    id: basis
+    attributes:
+      label: Basis
+      options: [Upstream requirement, Upstream recommendation, SpanLint heuristic]
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Immutable source URL
+      description: Link a tagged release or commit when the proposal derives from an upstream convention.
+  - type: textarea
+    id: fixture
+    attributes:
+      label: Minimal synthetic fixture and expected finding
+      render: json
+    validations:
+      required: true

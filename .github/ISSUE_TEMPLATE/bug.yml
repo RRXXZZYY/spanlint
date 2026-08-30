@@ -1,0 +1,36 @@
+name: Bug report
+description: Report reproducible parser, rule, CLI, or renderer behavior.
+title: "bug: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Do not attach production traces, prompts, credentials, private URLs, or customer data. Build a minimal synthetic fixture.
+  - type: input
+    id: version
+    attributes:
+      label: SpanLint version
+      placeholder: 0.1.0
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options: [OTLP parser, rule engine, CLI, HTML report, SARIF or JUnit, GitHub Action]
+    validations:
+      required: true
+  - type: textarea
+    id: fixture
+    attributes:
+      label: Minimal synthetic fixture
+      description: Paste only synthetic, redacted JSON needed to reproduce the behavior.
+      render: json
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected and actual behavior
+    validations:
+      required: true
