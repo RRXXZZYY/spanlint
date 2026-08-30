@@ -62,7 +62,7 @@ jobs:
           test "$code" -eq 1
       - name: Build offline demo
         run: node dist/src/cli.js demo --out spanlint-demo.html
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: spanlint-demo
           path: spanlint-demo.html
